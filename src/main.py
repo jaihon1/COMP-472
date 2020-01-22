@@ -1,4 +1,4 @@
-import module1
+import module
 
 
 
@@ -8,4 +8,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-    module1.main()
+    module.main()
