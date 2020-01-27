@@ -1,4 +1,4 @@
-from modules.board import board
+from modules.board import game
 
 
 def main():
@@ -7,4 +7,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-    board.main()
+    game.main()
