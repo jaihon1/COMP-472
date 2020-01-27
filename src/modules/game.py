@@ -3,20 +3,27 @@ import numpy as np
 from .board import Board
 
 def main():
-    print("This is the game")
 
     rows = 4
     cols = 4
 
     myBoard = Board(rows)
 
-    print(myBoard.initializeBoardRandom())
-    print(myBoard.initializeBoardOnes())
-    print(myBoard.initializeBoardZeros())
+    myBoard.initializeBoardRandom()
+    myBoard.initializeBoardOnes()
+    myBoard.initializeBoardZeros()
 
+    myBoard.draw();
     print(myBoard.verify())
 
-    myBoard.move(3, 2)
+    myBoard.move(1, 1)
+    myBoard.draw()
+    print(myBoard.verify())
+
+    myBoard.move(1, 1)
+    myBoard.draw()
+    print(myBoard.verify())
+
 
 if __name__ == '__main__':
     main()
