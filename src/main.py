@@ -1,11 +1,10 @@
-import module
-
+from modules.board import board
 
 
 def main():
-    print("python main function")
+    print("This is the main function")
 
 
 if __name__ == '__main__':
     main()
-    module.main()
+    board.main()

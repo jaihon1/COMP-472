@@ -1,7 +1,7 @@
 
 
 def main():
-    print("This is an imported module")
+    print("This is the board module")
 
 
 if __name__ == '__main__':
