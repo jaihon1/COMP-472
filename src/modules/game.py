@@ -9,13 +9,14 @@ def main():
     cols = 4
 
     myBoard = Board(rows)
-    myBoard.initializeBoard()
 
-    print(myBoard.initializeBoard())
+    print(myBoard.initializeBoardRandom())
     print(myBoard.initializeBoardOnes())
     print(myBoard.initializeBoardZeros())
 
     print(myBoard.verify())
+
+    myBoard.move(3, 2)
 
 if __name__ == '__main__':
     main()
