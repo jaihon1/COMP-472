@@ -74,7 +74,6 @@ class Board():
 
             elif i == (self.rows - 1) and j == (self.cols - 1):
                 print("Botton right")
-                print("Top right")
                 self.board[self.rows - 1][self.cols - 1] = (self.board[self.rows - 1][self.cols - 1] + 1) % 2
                 self.board[self.rows - 1][self.cols - 2] = (self.board[self.rows - 1][self.cols - 2] + 1) % 2
                 self.board[self.rows - 2][self.cols - 1] = (self.board[self.rows - 2][self.cols - 1] + 1) % 2
