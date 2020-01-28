@@ -22,6 +22,9 @@ class Board():
     def getBoard(self):
         return self.board
 
+    def getFlatBoard(self):
+        return self.board.flatten()
+
     def setBoard(self, board):
         self.board = board
 
@@ -32,7 +35,6 @@ class Board():
     def initializeBoardZeros(self):
         board = np.zeros(shape=(self.rows, self.cols))
         self.boardZeros = board
-
 
     def initializeBoardOnes(self):
         board = np.ones(shape=(self.rows, self.cols))
@@ -52,64 +54,64 @@ class Board():
             print("Illegal move.")
         else:
             # Legal move
-            print("Legal move.")
+            # print("Legal move.")
             # Corners
             if i == 0 and j == 0:
-                print("Top left")
+                # print("Top left")
                 self.board[0][0] = (self.board[0][0] + 1) % 2
                 self.board[0][1] = (self.board[0][1] + 1) % 2
                 self.board[1][0] = (self.board[1][0] + 1) % 2
 
             elif i == 0 and j == (self.cols - 1):
-                print("Top right")
+                # print("Top right")
                 self.board[0][self.cols - 1] = (self.board[0][self.cols - 1] + 1) % 2
                 self.board[0][self.cols - 2] = (self.board[0][self.cols - 2] + 1) % 2
                 self.board[1][self.cols - 1] = (self.board[1][self.cols - 1] + 1) % 2
 
             elif i == (self.rows - 1) and j == 0:
-                print("Botton left")
+                # print("Botton left")
                 self.board[self.rows - 1][0] = (self.board[self.rows - 1][0] + 1) % 2
                 self.board[self.rows - 1][1] = (self.board[self.rows - 1][1] + 1) % 2
                 self.board[self.rows - 2][0] = (self.board[self.rows - 2][0] + 1) % 2
 
             elif i == (self.rows - 1) and j == (self.cols - 1):
-                print("Botton right")
+                # print("Botton right")
                 self.board[self.rows - 1][self.cols - 1] = (self.board[self.rows - 1][self.cols - 1] + 1) % 2
                 self.board[self.rows - 1][self.cols - 2] = (self.board[self.rows - 1][self.cols - 2] + 1) % 2
                 self.board[self.rows - 2][self.cols - 1] = (self.board[self.rows - 2][self.cols - 1] + 1) % 2
 
             else:
-                print("Not corner")
+                # print("Not corner")
                 if i == 0:
-                    print("Top row")
+                    # print("Top row")
                     self.board[i][j] = (self.board[i][j] + 1) % 2
                     self.board[i][j + 1] = (self.board[i][j + 1] + 1) % 2
                     self.board[i][j - 1] = (self.board[i][j - 1] + 1) % 2
                     self.board[i + 1][j] = (self.board[i + 1][j] + 1) % 2
 
                 elif i == (self.rows - 1):
-                    print("Bottom row")
+                    # print("Bottom row")
                     self.board[i][j] = (self.board[i][j] + 1) % 2
                     self.board[i][j + 1] = (self.board[i][j + 1] + 1) % 2
                     self.board[i][j - 1] = (self.board[i][j - 1] + 1) % 2
                     self.board[i - 1][j] = (self.board[i - 1][j] + 1) % 2
 
                 elif j == 0:
-                    print("Left col")
+                    # print("Left col")
                     self.board[i][j] = (self.board[i][j] + 1) % 2
                     self.board[i + 1][j] = (self.board[i + 1][j] + 1) % 2
                     self.board[i - 1][j] = (self.board[i - 1][j] + 1) % 2
                     self.board[i][j + 1] = (self.board[i][j + 1] + 1) % 2
 
                 elif j == (self.cols - 1):
-                    print("Right col")
+                    # print("Right col")
                     self.board[i][j] = (self.board[i][j] + 1) % 2
                     self.board[i + 1][j] = (self.board[i + 1][j] + 1) % 2
                     self.board[i - 1][j] = (self.board[i - 1][j] + 1) % 2
                     self.board[i][j - 1] = (self.board[i][j - 1] + 1) % 2
 
                 else:
-                    print("Inside")
+                    # print("Inside")
                     self.board[i][j] = (self.board[i][j] + 1) % 2
                     self.board[i + 1][j] = (self.board[i + 1][j] + 1) % 2
                     self.board[i - 1][j] = (self.board[i - 1][j] + 1) % 2

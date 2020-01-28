@@ -1,6 +1,6 @@
 import numpy as np
 from modules.board import Board
-from modules.move import Move
+from modules.state import State
 
 class DFSearch():
     def __init__(self):
@@ -25,10 +25,31 @@ class DFSearch():
     def getCloseList(self):
         return self.closeList
 
+    def getChilds(self, board, depthParent):
+        childs = []
+
+        for i in range(board.getRows()):
+            for j in range(board.getCols()):
+                temp = board.getBoard()
+                oldBoardState = temp.copy()
+
+                board.move(i, j)
+                newBoardState = board.getBoard()
+                board.setBoard(oldBoardState)
+
+                depth = depthParent + 1
+
+                state = State(i, j, newBoardState, depth)
+                childs.append(state)
+
+        return childs
+
+
 
 def main():
 
-    board_size = 3
+    board_size = 4
+    max_depth = 5
 
     # Board Setup
     myBoard = Board(board_size)
@@ -41,30 +62,58 @@ def main():
     dfs = DFSearch()
 
     # Initial state
-    move = Move(None, None, myBoard.getBoard)
-    dfs.pushOpenList(move)
+    initial_state = State(None, None, myBoard.getBoard(), 0)
+    dfs.pushOpenList(initial_state)
 
     # Run Game
     while dfs.getOpenList():
 
-        # node = dfs.popOpenList()
+        print("Open Size:", len(dfs.getOpenList()))
+        print("Close Size:", len(dfs.getCloseList()))
 
-        # result = myBoard.verify()
+        current_state = dfs.popOpenList()
+        myBoard.setBoard(current_state.getState())
 
-        # if result:
-        #     print("GOOD WORK!")
-        #     break
-        # else:
+        result = myBoard.verify()
 
-        #     dfs.addCloseList(node)
+        if result:
+            print("GOOD WORK!")
+            break
+        else:
+            childs = dfs.getChilds(myBoard, current_state.getDepth())
+            for child in childs:
+                exist = False
+                # # Check in close list
+                # for move in dfs.getCloseList():
+                #     resultState = np.array_equal(child.getState(), move.getState())
+                #     # result_i = child.getCoordinateI() == move.getCoordinateI()
+                #     # result_j = child.getCoordinateJ() == move.getCoordinateJ()
 
-        # # myBoard.draw()
+                #     # if resultState and result_i and result_j:
+                #     if resultState:
+                #         exist = True
+                #         break
 
-        # # user_input_i = int(input("Please enter i coordinate (max " + str(board_size - 1) + "):" ))
-        # # user_input_j = int(input("Please enter j coordinate (max " + str(board_size - 1) + "):" ))
+                # if not exist:
+                #     # Check in open list
+                #     for move in dfs.getOpenList():
+                #         resultState = np.array_equal(child.getState(), move.getState())
+                #         # result_i = child.getCoordinateI() == move.getCoordinateI()
+                #         # result_j = child.getCoordinateJ() == move.getCoordinateJ()
 
-        # # print(user_input_i)
-        # # myBoard.move(user_input_i, user_input_j)
+                #         # if resultState and result_i and result_j:
+                #         if resultState:
+                #                 exist = True
+                #                 break
+
+                if not exist:
+                    if child.getDepth() <= max_depth:
+                        dfs.pushOpenList(child)
+
+
+            dfs.addCloseList(current_state)
+
+
 
 
 
