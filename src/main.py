@@ -1,36 +1,48 @@
 from modules.board import Board
+import numpy as np
+
+
 
 
 def main():
     print("This is the main function")
 
+    arr = []
+    arr.append(1)
+    arr.append(4)
+    
 
-    board_size = 3
+    print(arr.pop(0))
 
-    # Board Setup
-    myBoard = Board(board_size)
+    # board_size = 3
 
-    myBoard.initializeBoardRandom()
-    myBoard.initializeBoardOnes()
-    myBoard.initializeBoardZeros()
+    # # Board Setup
+    # myBoard = Board(board_size)
 
-    # Run Game
-    while True:
-        result = myBoard.verify()
+    # myBoard.initializeBoardRandom()
+    # myBoard.initializeBoardOnes()
+    # myBoard.initializeBoardZeros()
 
-        if result:
-            print("GOOD WORK!")
-            break
-        else:
-            print("NOT YET..")
+    # # Run Game
+    # while True:
+    #     result = myBoard.verify()
 
-        myBoard.draw()
+    #     if result:
+    #         print("GOOD WORK!")
+    #         break
+    #     else:
+    #         print("NOT YET..")
 
-        user_input_i = int(input("Please enter i coordinate (max " + str(board_size - 1) + "):" ))
-        user_input_j = int(input("Please enter j coordinate (max " + str(board_size - 1) + "):" ))
+    #     myBoard.draw()
 
-        print(user_input_i)
-        myBoard.move(user_input_i, user_input_j)
+    #     try:
+    #         user_input_i = int(input("Please enter i coordinate (max " + str(board_size - 1) + "):" ))
+    #         user_input_j = int(input("Please enter j coordinate (max " + str(board_size - 1) + "):" ))
+    #         myBoard.move(user_input_i, user_input_j)
+    #     except ValueError:
+    #         print("Invalid input!")
+    #         continue
+
 
 
 
