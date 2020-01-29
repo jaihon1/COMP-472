@@ -27,7 +27,7 @@ class DFSearch():
 
     def getChilds(self, board, currentState):
         childs = []
-        print("WAVE")
+
         for i in range(board.getRows()):
             for j in range(board.getCols()):
                 # Don't get the child that did the same move as you
@@ -55,8 +55,8 @@ class DFSearch():
 
 def main():
 
-    board_size = 4
-    max_depth = 4
+    board_size = 3
+    max_depth = 3
 
     # Board Setup
     myBoard = Board(board_size)
@@ -67,6 +67,9 @@ def main():
 
     # DFS setup
     dfs = DFSearch()
+
+    print("Initial Board")
+    print(myBoard.getBoard())
 
     # Initial state
     initial_state = State(None, None, myBoard.getBoard(), 0)
@@ -120,10 +123,6 @@ def main():
 
 
             dfs.addCloseList(current_state)
-
-
-
-
 
 
 
