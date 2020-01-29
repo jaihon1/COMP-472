@@ -25,22 +25,29 @@ class DFSearch():
     def getCloseList(self):
         return self.closeList
 
-    def getChilds(self, board, depthParent):
+    def getChilds(self, board, currentState):
         childs = []
-
+        print("WAVE")
         for i in range(board.getRows()):
             for j in range(board.getCols()):
-                temp = board.getBoard()
-                oldBoardState = temp.copy()
+                # Don't get the child that did the same move as you
+                if not (i == currentState.getCoordinateI() and j == currentState.getCoordinateJ()):
+                    temp = board.getBoard()
+                    oldBoardState = temp.copy()
 
-                board.move(i, j)
-                newBoardState = board.getBoard()
-                board.setBoard(oldBoardState)
+                    board.move(i, j)
+                    newBoardState = board.getBoard()
+                    board.setBoard(oldBoardState)
 
-                depth = depthParent + 1
+                    depth = currentState.getDepth() + 1
 
-                state = State(i, j, newBoardState, depth)
-                childs.append(state)
+                    # print(oldBoardState)
+                    # print(i, j)
+                    # print(newBoardState)
+                    # print("------------")
+
+                    state = State(i, j, newBoardState, depth)
+                    childs.append(state)
 
         return childs
 
@@ -49,7 +56,7 @@ class DFSearch():
 def main():
 
     board_size = 4
-    max_depth = 5
+    max_depth = 4
 
     # Board Setup
     myBoard = Board(board_size)
@@ -80,9 +87,10 @@ def main():
             print("GOOD WORK!")
             break
         else:
-            childs = dfs.getChilds(myBoard, current_state.getDepth())
+            childs = dfs.getChilds(myBoard, current_state)
             for child in childs:
                 exist = False
+
                 # # Check in close list
                 # for move in dfs.getCloseList():
                 #     resultState = np.array_equal(child.getState(), move.getState())
