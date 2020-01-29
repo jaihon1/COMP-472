@@ -51,6 +51,62 @@ class DFSearch():
 
         return childs
 
+    def run(self, board, max_depth):
+        # Initial state
+        initial_state = State(None, None, board.getBoard(), 0)
+        self.pushOpenList(initial_state)
+
+        # Run Game
+        while self.getOpenList():
+
+            print("Open Size:", len(self.getOpenList()))
+            print("Close Size:", len(self.getCloseList()))
+
+            current_state = self.popOpenList()
+            board.setBoard(current_state.getState())
+
+            result = board.verify()
+
+            if result:
+                print("GOOD WORK!")
+                break
+            else:
+                childs = self.getChilds(board, current_state)
+                for child in childs:
+                    exist = False
+
+                    # # Check in close list
+                    # for move in dfs.getCloseList():
+                    #     resultState = np.array_equal(child.getState(), move.getState())
+                    #     # result_i = child.getCoordinateI() == move.getCoordinateI()
+                    #     # result_j = child.getCoordinateJ() == move.getCoordinateJ()
+
+                    #     # if resultState and result_i and result_j:
+                    #     if resultState:
+                    #         exist = True
+                    #         break
+
+                    # if not exist:
+                    #     # Check in open list
+                    #     for move in dfs.getOpenList():
+                    #         resultState = np.array_equal(child.getState(), move.getState())
+                    #         # result_i = child.getCoordinateI() == move.getCoordinateI()
+                    #         # result_j = child.getCoordinateJ() == move.getCoordinateJ()
+
+                    #         # if resultState and result_i and result_j:
+                    #         if resultState:
+                    #                 exist = True
+                    #                 break
+
+                    if not exist:
+                        if child.getDepth() <= max_depth:
+                            self.pushOpenList(child)
+
+
+                self.addCloseList(current_state)
+
+
+
 
 
 def main():
@@ -71,58 +127,8 @@ def main():
     print("Initial Board")
     print(myBoard.getBoard())
 
-    # Initial state
-    initial_state = State(None, None, myBoard.getBoard(), 0)
-    dfs.pushOpenList(initial_state)
+    dfs.run(myBoard, max_depth)
 
-    # Run Game
-    while dfs.getOpenList():
-
-        print("Open Size:", len(dfs.getOpenList()))
-        print("Close Size:", len(dfs.getCloseList()))
-
-        current_state = dfs.popOpenList()
-        myBoard.setBoard(current_state.getState())
-
-        result = myBoard.verify()
-
-        if result:
-            print("GOOD WORK!")
-            break
-        else:
-            childs = dfs.getChilds(myBoard, current_state)
-            for child in childs:
-                exist = False
-
-                # # Check in close list
-                # for move in dfs.getCloseList():
-                #     resultState = np.array_equal(child.getState(), move.getState())
-                #     # result_i = child.getCoordinateI() == move.getCoordinateI()
-                #     # result_j = child.getCoordinateJ() == move.getCoordinateJ()
-
-                #     # if resultState and result_i and result_j:
-                #     if resultState:
-                #         exist = True
-                #         break
-
-                # if not exist:
-                #     # Check in open list
-                #     for move in dfs.getOpenList():
-                #         resultState = np.array_equal(child.getState(), move.getState())
-                #         # result_i = child.getCoordinateI() == move.getCoordinateI()
-                #         # result_j = child.getCoordinateJ() == move.getCoordinateJ()
-
-                #         # if resultState and result_i and result_j:
-                #         if resultState:
-                #                 exist = True
-                #                 break
-
-                if not exist:
-                    if child.getDepth() <= max_depth:
-                        dfs.pushOpenList(child)
-
-
-            dfs.addCloseList(current_state)
 
 
 
