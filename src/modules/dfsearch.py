@@ -1,11 +1,12 @@
 import numpy as np
-from modules.board import Board
-from modules.state import State
+
+from .state import State
 
 class DFSearch():
-    def __init__(self):
+    def __init__(self, maxDepth):
         self.openList = [] # A stack
         self.closeList = [] # A queue
+        self.maxDepth = maxDepth
 
     def pushOpenList(self, value):
         self.openList.append(value)
@@ -51,7 +52,7 @@ class DFSearch():
 
         return childs
 
-    def run(self, board, max_depth):
+    def run(self, board):
         # Initial state
         initial_state = State(None, None, board.getBoard(), 0)
         self.pushOpenList(initial_state)
@@ -99,7 +100,7 @@ class DFSearch():
                     #                 break
 
                     if not exist:
-                        if child.getDepth() <= max_depth:
+                        if child.getDepth() <= self.maxDepth:
                             self.pushOpenList(child)
 
 
@@ -110,24 +111,8 @@ class DFSearch():
 
 
 def main():
+    print("This is DFS.")
 
-    board_size = 3
-    max_depth = 3
-
-    # Board Setup
-    myBoard = Board(board_size)
-
-    myBoard.initializeBoardRandom()
-    myBoard.initializeBoardOnes()
-    myBoard.initializeBoardZeros()
-
-    # DFS setup
-    dfs = DFSearch()
-
-    print("Initial Board")
-    print(myBoard.getBoard())
-
-    dfs.run(myBoard, max_depth)
 
 
 
