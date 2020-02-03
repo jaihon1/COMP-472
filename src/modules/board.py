@@ -25,6 +25,9 @@ class Board():
     def getFlatBoard(self):
         return self.board.flatten()
 
+    # def buildBoard(self, board, size):
+    #     np.
+
     def setBoard(self, board):
         self.board = board
 

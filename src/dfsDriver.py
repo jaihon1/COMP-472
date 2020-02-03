@@ -1,24 +1,48 @@
 from modules.dfsearch import DFSearch
 from modules.board import Board
 
+import numpy as np
+
 def main():
-    board_size = 3
-    max_depth = 3
 
-    # Board Setup
-    myBoard = Board(board_size)
+    with open('test.txt') as f:
+        puzzles = f.readlines()
 
-    myBoard.initializeBoardRandom()
-    myBoard.initializeBoardOnes()
-    myBoard.initializeBoardZeros()
+    for puzzle in puzzles:
+        print(puzzle)
+        elements = puzzle.split()
+        board_size = int(elements[0])
+        max_depth = int(elements[1])
+        boardValues = list(elements[3])
+        puzzleIndex = puzzles.index(puzzle)
 
-    # DFS setup
-    dfs = DFSearch(max_depth)
+        counter = 0;
 
-    print("Initial Board")
-    print(myBoard.getBoard())
+        board = np.zeros(shape=(board_size, board_size))
+        for i in range(board_size):
+            for j in range(board_size):
+                board[i][j] = boardValues[counter]
+                counter += 1
 
-    dfs.run(myBoard)
+        # Board Setup
+        myBoard = Board(board_size)
+
+        # myBoard.initializeBoardRandom()
+        myBoard.setBoard(board)
+        myBoard.initializeBoardOnes()
+        myBoard.initializeBoardZeros()
+
+        # DFS setup
+        dfs = DFSearch(max_depth, puzzleIndex)
+
+        print("Initial Board")
+        print(myBoard.getBoard())
+
+        dfs.run(myBoard)
+
+
+
+
 
 
 if __name__ == '__main__':
