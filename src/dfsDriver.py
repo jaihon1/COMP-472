@@ -5,18 +5,23 @@ import numpy as np
 
 def main():
 
+    ## Reading input file ##
     with open('test.txt') as f:
         puzzles = f.readlines()
 
+    ## Running DFS on them ##
     for puzzle in puzzles:
+        # Game Setup
+        puzzleIndex = puzzles.index(puzzle)
+        print("Puzzle #: ", puzzleIndex)
         print(puzzle)
+
         elements = puzzle.split()
         board_size = int(elements[0])
         max_depth = int(elements[1])
         boardValues = list(elements[3])
-        puzzleIndex = puzzles.index(puzzle)
 
-        counter = 0;
+        counter = 0
 
         board = np.zeros(shape=(board_size, board_size))
         for i in range(board_size):
@@ -27,7 +32,6 @@ def main():
         # Board Setup
         myBoard = Board(board_size)
 
-        # myBoard.initializeBoardRandom()
         myBoard.setBoard(board)
         myBoard.initializeBoardOnes()
         myBoard.initializeBoardZeros()

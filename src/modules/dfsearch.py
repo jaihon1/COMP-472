@@ -1,4 +1,5 @@
 import numpy as np
+import time
 from copy import deepcopy
 from .state import State
 
@@ -31,21 +32,16 @@ class DFSearch():
     def getSolution(self, state):
         currentState = state
         self.solutionPath.append(currentState)
-        # print(currentState.getCoordinateI(), currentState.getCoordinateJ())
-        # print(currentState.getBoardState())
-        # print("------------")
 
         while not (currentState.getPreviousState() == None):
-
-                currentState = currentState.getPreviousState()
-                self.solutionPath.append(currentState)
-
-                # print(currentState.getCoordinateI(), currentState.getCoordinateJ())
-                # print(currentState.getBoardState())
-                # print("------------")
-
+            currentState = currentState.getPreviousState()
+            self.solutionPath.append(currentState)
 
         return self.solutionPath
+
+    def outputNoSolution(self):
+        with open(str(self.puzzleIndex) + '_dfs_solution.txt', 'a') as f:
+            print("NO SOLUTION!", file=f)
 
     def outputSolution(self):
         with open(str(self.puzzleIndex) + '_dfs_solution.txt', 'a') as f:
@@ -66,20 +62,14 @@ class DFSearch():
                 # Don't get the child that did the same move as you
                 if not (i == currentState.getCoordinateI() and j == currentState.getCoordinateJ()):
                     temp = board.getBoard()
-
                     oldBoardState = temp.copy()
 
                     board.move(i, j)
+
                     newBoardState = board.getBoard()
                     board.setBoard(oldBoardState)
 
                     depth = currentState.getDepth() + 1
-
-                    # print(tempCurrentState.getBoardState())
-                    # print(i, j)
-                    # print(newBoardState)
-                    # print("------------")
-
                     state = State(i, j, newBoardState, depth, tempCurrentState)
                     childs.append(state)
 
@@ -90,12 +80,12 @@ class DFSearch():
         initial_state = State(None, None, board.getBoard(), 0, None)
         self.pushOpenList(initial_state)
 
+        # Initiate Timer
+        start_time = time.time()
+
         # Run Game
+        print("Initiating DFS!!")
         while self.getOpenList():
-
-            # print("Open Size:", len(self.getOpenList()))
-            # print("Close Size:", len(self.getCloseList()))
-
             current_state = self.popOpenList()
             board.setBoard(current_state.getBoardState())
 
@@ -104,11 +94,14 @@ class DFSearch():
             result = board.verify()
 
             if result:
-                print("GOOD WORK!")
-                # self.addCloseList(current_state)
+                print("GOOD WORK!", "Waiting to finish output files...")
+                print("--- Duration of DFS: %s seconds ---" % (time.time() - start_time))
                 self.getSolution(current_state)
                 self.outputSolution()
                 self.outuptSearch()
+                print("--- Duration of Output to file: %s seconds ---" % (time.time() - start_time))
+                print("Nodes visited: ", len(self.closeList))
+                print("End.")
                 break
             else:
                 childs = self.getChilds(board, current_state)
@@ -116,8 +109,8 @@ class DFSearch():
                     exist = False
 
                     # # Check in close list
-                    # for move in dfs.getCloseList():
-                    #     resultState = np.array_equal(child.getState(), move.getState())
+                    # for move in self.getCloseList():
+                    #     resultState = np.array_equal(child.getBoardState(), move.getBoardState())
                     #     # result_i = child.getCoordinateI() == move.getCoordinateI()
                     #     # result_j = child.getCoordinateJ() == move.getCoordinateJ()
 
@@ -128,8 +121,8 @@ class DFSearch():
 
                     # if not exist:
                     #     # Check in open list
-                    #     for move in dfs.getOpenList():
-                    #         resultState = np.array_equal(child.getState(), move.getState())
+                    #     for move in self.getOpenList():
+                    #         resultState = np.array_equal(child.getBoardState(), move.getBoardState())
                     #         # result_i = child.getCoordinateI() == move.getCoordinateI()
                     #         # result_j = child.getCoordinateJ() == move.getCoordinateJ()
 
@@ -141,6 +134,12 @@ class DFSearch():
                     if not exist:
                         if child.getDepth() <= self.maxDepth:
                             self.pushOpenList(child)
+
+        if not self.getOpenList():
+            print("NO SOLUTIOON!", "Waiting to finish output files...")
+            self.outputNoSolution()
+            print("Nodes visited: ", len(self.closeList))
+            print("End.")
 
 
 
