@@ -46,12 +46,12 @@ class DFSearch():
     def outputSolution(self):
         with open(str(self.puzzleIndex) + '_dfs_solution.txt', 'a') as f:
             for state in reversed(self.solutionPath):
-                print(state.getCoordinateI(), state.getCoordinateJ(), state.getBoardState().flatten(), file=f)
+                print(state.getAlphabeticalCoordinateI(), state.getCoordinateJ(), state.getBoardState().flatten(), file=f)
 
     def outuptSearch(self):
         with open(str(self.puzzleIndex) + '_dfs_search.txt', 'a') as f:
             for state in self.closeList:
-                print(state.getCoordinateI(), state.getCoordinateJ(), state.getBoardState().flatten(), file=f)
+                print(state.getAlphabeticalCoordinateI(), state.getCoordinateJ(), state.getBoardState().flatten(), file=f)
 
 
     def getChilds(self, board, currentState):
