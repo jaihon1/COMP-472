@@ -64,28 +64,41 @@ class DFSearch():
         # iterating through flattened children:
         for i in range(length):
             # convert numpy array to list so that we can use "index()":
-            print("flattened child:")
-            print(flattenedChildren[i])
+            # print("flattened child:")
+            # print(flattenedChildren[i])
 
-            print("flattened child list:")
+            # print("flattened child list:")
             arrayToList = flattenedChildren[i].tolist()
-            print(arrayToList)
+            # print(arrayToList)
             
             try:
                 # index of first 1:
                 index = arrayToList.index(1)
                 # store index of first 1 in dictionary:
                 dictionary[i] = index
-                print("Index of first 1:")
-                print(dictionary[i])
+                # print("Index of first 1:")
+                # print(dictionary[i])
             except ValueError:
                 print("Error. 1 is not in the list.")
         
         # sort dictionary:
+        # print("Unsorted")
+        # print(dictionary)
+        tupleList = sorted(dictionary.items(), key=lambda x: (x[1],x[0]))
+        # print("Sorted:")
+        # converting list of tuples to dictionary:
+        sortedDictionary = dict(tupleList)
+        # print(sortedDictionary)
 
+        # taking keys of sortedDictionary:
+        sortedKeys = []
+        for key in sortedDictionary:
+            sortedKeys.append(key)
+        
         # reorder children:
-            
+        length = len(children)
 
+    
         return children
 
         
