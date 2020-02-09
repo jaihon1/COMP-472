@@ -54,8 +54,8 @@ class DFSearch():
                 print(state.getAlphabeticalCoordinateI(), state.getCoordinateJ(), state.getBoardState().flatten(), file=f)
 
 
-    def getChilds(self, board, currentState):
-        childs = []
+    def getChildren(self, board, currentState):
+        children = []
         tempCurrentState = deepcopy(currentState)
         for i in range(board.getRows()):
             for j in range(board.getCols()):
@@ -71,9 +71,28 @@ class DFSearch():
 
                     depth = currentState.getDepth() + 1
                     state = State(i, j, newBoardState, depth, tempCurrentState)
-                    childs.append(state)
+                    
+                    children.append(state)
+                    
+        # if tied between children (same number of 1s):
+        # iterate through children and flatten board
+        # iterate through flattened board and count number of 1s
+        # if there's a tie with the number of 1s, find smallest index of the first 1
+        # append children in proper order
+        
+        flattenedChildren = []
+        for child in children:
+            flattenedChildren.append(child.getBoardState().flatten())
 
-        return childs
+        for flatChild in flattenedChildren:
+            numberOfOnes = 0
+            trackingNumberOfOnes = {}
+            keys = len(flattenedChildren)
+            for index in flatChild:
+                if index == 1:
+                     numberOfOnes += numberOfOnes
+
+        return children
 
     def run(self, board):
         # Initial state
@@ -104,8 +123,8 @@ class DFSearch():
                 print("End.")
                 break
             else:
-                childs = self.getChilds(board, current_state)
-                for child in childs:
+                children = self.getChildren(board, current_state)
+                for child in children:
                     exist = False
 
                     # # Check in close list
@@ -136,7 +155,7 @@ class DFSearch():
                             self.pushOpenList(child)
 
         if not self.getOpenList():
-            print("NO SOLUTIOON!", "Waiting to finish output files...")
+            print("NO SOLUTION!", "Waiting to finish output files...")
             self.outputNoSolution()
             print("Nodes visited: ", len(self.closeList))
             print("End.")
