@@ -53,7 +53,42 @@ class DFSearch():
             for state in self.closeList:
                 print(state.getAlphabeticalCoordinateI(), state.getCoordinateJ(), state.getBoardState().flatten(), file=f)
 
+    def reorderChildren(self, children):
+        flattenedChildren = []
+        dictionary = {}
+        for child in children:
+            flattenedChildren.append(child.getBoardState().flatten()) 
 
+        length = len(flattenedChildren)
+
+        # iterating through flattened children:
+        for i in range(length):
+            # convert numpy array to list so that we can use "index()":
+            print("flattened child:")
+            print(flattenedChildren[i])
+
+            print("flattened child list:")
+            arrayToList = flattenedChildren[i].tolist()
+            print(arrayToList)
+            
+            try:
+                # index of first 1:
+                index = arrayToList.index(1)
+                # store index of first 1 in dictionary:
+                dictionary[i] = index
+                print("Index of first 1:")
+                print(dictionary[i])
+            except ValueError:
+                print("Error. 1 is not in the list.")
+        
+        # sort dictionary:
+
+        # reorder children:
+            
+
+        return children
+
+        
     def getChildren(self, board, currentState):
         children = []
         tempCurrentState = deepcopy(currentState)
@@ -73,26 +108,11 @@ class DFSearch():
                     state = State(i, j, newBoardState, depth, tempCurrentState)
                     
                     children.append(state)
-                    
-        # if tied between children (same number of 1s):
-        # iterate through children and flatten board
-        # iterate through flattened board and count number of 1s
-        # if there's a tie with the number of 1s, find smallest index of the first 1
-        # append children in proper order
-        
-        flattenedChildren = []
-        for child in children:
-            flattenedChildren.append(child.getBoardState().flatten())
 
-        for flatChild in flattenedChildren:
-            numberOfOnes = 0
-            trackingNumberOfOnes = {}
-            keys = len(flattenedChildren)
-            for index in flatChild:
-                if index == 1:
-                     numberOfOnes += numberOfOnes
+        reorderedChildren = self.reorderChildren(children)
 
-        return children
+        return reorderedChildren
+
 
     def run(self, board):
         # Initial state
