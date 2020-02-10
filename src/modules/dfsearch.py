@@ -58,7 +58,7 @@ class DFSearch():
     def reorderChildren(self, children):
         flattenedChildren = []
         sortedKeys = []
-        orderedChildren = []
+        reorderedChildren = []
 
         dictionary = {}
         for child in children:
@@ -91,10 +91,9 @@ class DFSearch():
 
         # reorder children:
         for key in sortedKeys:
-            orderedChildren.append(children[key])
+            reorderedChildren.append(children[key])
 
-        return orderedChildren
-
+        return reorderedChildren
 
     def getChildren(self, board, currentState):
         children = []
