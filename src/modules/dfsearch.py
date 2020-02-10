@@ -48,12 +48,12 @@ class DFSearch():
     def outputSolution(self):
         with open(str(self.puzzleIndex) + '_dfs_solution.txt', 'a') as f:
             for state in reversed(self.solutionPath):
-                print(state.getAlphabeticalCoordinateI(), state.getCoordinateJ(), state.getBoardState().flatten(), file=f)
+                print(str(state.getAlphabeticalCoordinateI()) + str(state.getCoordinateJ()), ' '.join(map(str, state.getBoardState().flatten().astype(int))), file=f)
 
     def outuptSearch(self):
         with open(str(self.puzzleIndex) + '_dfs_search.txt', 'a') as f:
             for state in self.closeList:
-                print(state.getAlphabeticalCoordinateI(), state.getCoordinateJ(), state.getBoardState().flatten(), file=f)
+                print(str(state.getAlphabeticalCoordinateI()) + str(state.getCoordinateJ()), ' '.join(map(str, state.getBoardState().flatten().astype(int))), file=f)
 
     def reorderChildren(self, children):
         flattenedChildren = []
@@ -132,9 +132,9 @@ class DFSearch():
 
                     children.append(state)
 
-        reorderedChildren = self.reorderChildren(children)
+        # reorderedChildren = self.reorderChildren(children)
 
-        return reorderedChildren
+        return children
 
 
     def run(self, board):
@@ -200,6 +200,7 @@ class DFSearch():
             print("--- Duration of DFS: %s seconds ---" % (time.time() - start_time))
             self.outputNoSolution()
             self.outuptSearch()
+            print("--- Duration of Output to file: %s seconds ---" % (time.time() - start_time))
             print("Nodes visited: ", len(self.closeList))
             print("End.")
 
