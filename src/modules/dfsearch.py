@@ -139,7 +139,7 @@ class DFSearch():
 
     def run(self, board):
         # Initial state
-        initial_state = State(None, None, board.getBoard(), 0, None)
+        initial_state = State(11, 0, board.getBoard(), 0, None)
         self.pushOpenList(initial_state)
 
         # Initiate Timer

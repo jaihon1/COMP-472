@@ -20,7 +20,8 @@ class State():
             7: 'H',
             8: 'I',
             9: 'J',
-            10: 'K'
+            10: 'K',
+            11: '',
         }
         return switcher.get(numericalCoordinate)
 
