@@ -22,7 +22,7 @@ class State():
             9: 'J',
             10: 'K'
         }
-        return switcher.get(numericalCoordinate, "Invalid coordinate")
+        return switcher.get(numericalCoordinate)
     
     def getCoordinateI(self):
         return self.i
