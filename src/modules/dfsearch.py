@@ -148,9 +148,7 @@ class DFSearch():
         while self.getOpenList():
             current_state = self.popOpenList()
             board.setBoard(current_state.getBoardState())
-
-            self.addCloseList(current_state)
-
+            self.addCloseList(deepcopy(current_state))
             result = board.verify()
 
             if result:
@@ -165,7 +163,7 @@ class DFSearch():
                 break
             else:
                 children = self.getChildren(board, current_state)
-                for child in children:
+                for child in reversed(children):
                     exist = False
 
                     # # Check in close list
@@ -198,6 +196,7 @@ class DFSearch():
         if not self.getOpenList():
             print("NO SOLUTION!", "Waiting to finish output files...")
             self.outputNoSolution()
+            self.outuptSearch()
             print("Nodes visited: ", len(self.closeList))
             print("End.")
 
