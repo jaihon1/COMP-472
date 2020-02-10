@@ -64,6 +64,7 @@ class DFSearch():
         # iterating through flattened children:
         for i in range(length):
             # convert numpy array to list so that we can use "index()":
+           
             # print("flattened child:")
             # print(flattenedChildren[i])
 
@@ -96,10 +97,11 @@ class DFSearch():
             sortedKeys.append(key)
         
         # reorder children:
-        length = len(children)
-
-    
-        return children
+        reorderedChildren = []
+        for key in sortedKeys:
+            reorderedChildren.append(children[key])
+        
+        return reorderedChildren
 
         
     def getChildren(self, board, currentState):
