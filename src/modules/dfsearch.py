@@ -71,9 +71,9 @@ class DFSearch():
             # convert numpy array to list so that we can use "index()":
             arrayToList = flattenedChildren[i].tolist()
 
-            if(1 in arrayToList):
+            if(0 in arrayToList):
                 # index of first 1:
-                index = arrayToList.index(1)
+                index = arrayToList.index(0)
                 # store index of first 1 in dictionary:
                 dictionary[i] = index
             else:
