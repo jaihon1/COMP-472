@@ -3,7 +3,8 @@ import time
 from copy import deepcopy
 from .state import State
 
-TOGGLE_REMOVE_PREVIOUS_MOVE = True
+TOGGLE_REMOVE_PREVIOUS_MOVE = False
+TOGGLE_ORDER_CHILDREN = True
 
 class DFSearch():
     def __init__(self, maxDepth, puzzleIndex):
@@ -48,12 +49,12 @@ class DFSearch():
     def outputSolution(self):
         with open(str(self.puzzleIndex) + '_dfs_solution.txt', 'a') as f:
             for state in reversed(self.solutionPath):
-                print(state.getAlphabeticalCoordinateI(), state.getCoordinateJ(), state.getBoardStateToPrint(), file=f)
+                print(str(state.getAlphabeticalCoordinateI()) + str(state.getCoordinateJ()), ' '.join(map(str, state.getBoardState().flatten().astype(int))), file=f)
 
     def outuptSearch(self):
         with open(str(self.puzzleIndex) + '_dfs_search.txt', 'a') as f:
             for state in self.closeList:
-                print(state.getAlphabeticalCoordinateI(), state.getCoordinateJ(), state.getBoardStateToPrint(), file=f)
+                print(str(state.getAlphabeticalCoordinateI()) + str(state.getCoordinateJ()), ' '.join(map(str, state.getBoardState().flatten().astype(int))), file=f)
 
     def reorderChildren(self, children):
         flattenedChildren = []
@@ -103,7 +104,7 @@ class DFSearch():
         for i in range(board.getRows()):
             for j in range(board.getCols()):
                 # Don't include previous move Mode
-                if(TOGGLE_REMOVE_PREVIOUS_MOVE):
+                if TOGGLE_REMOVE_PREVIOUS_MOVE:
                     if not (i == currentState.getCoordinateI() and j == currentState.getCoordinateJ()):
                         temp = board.getBoard()
                         oldBoardState = temp.copy()
@@ -132,9 +133,12 @@ class DFSearch():
 
                     children.append(state)
 
-        reorderedChildren = self.reorderChildren(children)
+        if TOGGLE_ORDER_CHILDREN:
+            reorderedChildren = self.reorderChildren(children)
+            return reorderedChildren
+        else:
+            return children
 
-        return reorderedChildren
 
 
     def run(self, board):
@@ -200,6 +204,7 @@ class DFSearch():
             print("--- Duration of DFS: %s seconds ---" % (time.time() - start_time))
             self.outputNoSolution()
             self.outuptSearch()
+            print("--- Duration of Output to file: %s seconds ---" % (time.time() - start_time))
             print("Nodes visited: ", len(self.closeList))
             print("End.")
 
