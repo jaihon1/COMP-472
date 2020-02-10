@@ -34,6 +34,12 @@ class State():
     def getBoardState(self):
         return self.boardState
 
+    def getBoardStateToPrint(self):
+        integerArray = self.boardState.flatten().astype(int)
+        output = '\t'
+        output += ' '.join(map(str, integerArray))
+        return output
+
     def getDepth(self):
         return self.depth
 
