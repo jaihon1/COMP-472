@@ -7,6 +7,24 @@ class State():
         self.depth = depth
         self.previousState = previousState
 
+    def getAlphabeticalCoordinateI(self):
+        numericalCoordinate = self.i
+        switcher = {
+            0: 'A',
+            1: 'B',
+            2: 'C',
+            3: 'D',
+            4: 'E',
+            5: 'F',
+            6: 'G',
+            7: 'H',
+            8: 'I',
+            9: 'J',
+            10: 'K',
+            11: ' ',
+        }
+        return switcher.get(numericalCoordinate)
+
     def getCoordinateI(self):
         return self.i
 
@@ -15,6 +33,12 @@ class State():
 
     def getBoardState(self):
         return self.boardState
+
+    def getBoardStateToPrint(self):
+        integerArray = self.boardState.flatten().astype(int)
+        output = '\t'
+        output += ' '.join(map(str, integerArray))
+        return output
 
     def getDepth(self):
         return self.depth

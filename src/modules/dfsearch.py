@@ -3,6 +3,9 @@ import time
 from copy import deepcopy
 from .state import State
 
+TOGGLE_REMOVE_PREVIOUS_MOVE = False
+TOGGLE_ORDER_CHILDREN = True
+
 class DFSearch():
     def __init__(self, maxDepth, puzzleIndex):
         self.openList = [] # A stack
@@ -46,21 +49,77 @@ class DFSearch():
     def outputSolution(self):
         with open(str(self.puzzleIndex) + '_dfs_solution.txt', 'a') as f:
             for state in reversed(self.solutionPath):
-                print(state.getCoordinateI(), state.getCoordinateJ(), state.getBoardState().flatten(), file=f)
+                print(str(state.getAlphabeticalCoordinateI()) + str(state.getCoordinateJ()), ' '.join(map(str, state.getBoardState().flatten().astype(int))), file=f)
 
     def outuptSearch(self):
         with open(str(self.puzzleIndex) + '_dfs_search.txt', 'a') as f:
             for state in self.closeList:
-                print(state.getCoordinateI(), state.getCoordinateJ(), state.getBoardState().flatten(), file=f)
+                print(str(state.getAlphabeticalCoordinateI()) + str(state.getCoordinateJ()), ' '.join(map(str, state.getBoardState().flatten().astype(int))), file=f)
+
+    def reorderChildren(self, children):
+        flattenedChildren = []
+        sortedKeys = []
+        reorderedChildren = []
+
+        dictionary = {}
+        for child in children:
+            flattenedChildren.append(child.getBoardState().flatten())
 
 
-    def getChilds(self, board, currentState):
-        childs = []
+        # iterating through flattened children:
+        length = len(flattenedChildren)
+        for i in range(length):
+            # convert numpy array to list so that we can use "index()":
+            arrayToList = flattenedChildren[i].tolist()
+
+            if(0 in arrayToList):
+                # index of first 1:
+                index = arrayToList.index(0)
+                # store index of first 1 in dictionary:
+                dictionary[i] = index
+            else:
+            # if 1 is not in list, store arbitrary number bigger than any index
+            # when sorting, boards w/o 1 won't be discarded and 100 will be sorted after the 1s 
+                dictionary[i] = 100
+
+        # sort by dictionary by value
+        tupleList = sorted(dictionary.items(), key=lambda x: (x[1],x[0]))
+
+        # converting list of tuples to dictionary:
+        sortedDictionary = dict(tupleList)
+
+        # taking keys of sortedDictionary:
+        for key in sortedDictionary:
+            sortedKeys.append(key)
+
+        # reorder children:
+        for key in sortedKeys:
+            reorderedChildren.append(children[key])
+
+        return reorderedChildren
+
+    def getChildren(self, board, currentState):
+        children = []
         tempCurrentState = deepcopy(currentState)
         for i in range(board.getRows()):
             for j in range(board.getCols()):
-                # Don't get the child that did the same move as you
-                if not (i == currentState.getCoordinateI() and j == currentState.getCoordinateJ()):
+                # Don't include previous move Mode
+                if TOGGLE_REMOVE_PREVIOUS_MOVE:
+                    if not (i == currentState.getCoordinateI() and j == currentState.getCoordinateJ()):
+                        temp = board.getBoard()
+                        oldBoardState = temp.copy()
+
+                        board.move(i, j)
+
+                        newBoardState = board.getBoard()
+                        board.setBoard(oldBoardState)
+
+                        depth = currentState.getDepth() + 1
+                        state = State(i, j, newBoardState, depth, tempCurrentState)
+
+                        children.append(state)
+                # Normal Mode
+                else:
                     temp = board.getBoard()
                     oldBoardState = temp.copy()
 
@@ -71,13 +130,20 @@ class DFSearch():
 
                     depth = currentState.getDepth() + 1
                     state = State(i, j, newBoardState, depth, tempCurrentState)
-                    childs.append(state)
 
-        return childs
+                    children.append(state)
+
+        if TOGGLE_ORDER_CHILDREN:
+            reorderedChildren = self.reorderChildren(children)
+            return reorderedChildren
+        else:
+            return children
+
+
 
     def run(self, board):
         # Initial state
-        initial_state = State(None, None, board.getBoard(), 0, None)
+        initial_state = State(11, 0, board.getBoard(), 0, None)
         self.pushOpenList(initial_state)
 
         # Initiate Timer
@@ -88,9 +154,7 @@ class DFSearch():
         while self.getOpenList():
             current_state = self.popOpenList()
             board.setBoard(current_state.getBoardState())
-
-            self.addCloseList(current_state)
-
+            self.addCloseList(deepcopy(current_state))
             result = board.verify()
 
             if result:
@@ -104,8 +168,8 @@ class DFSearch():
                 print("End.")
                 break
             else:
-                childs = self.getChilds(board, current_state)
-                for child in childs:
+                children = self.getChildren(board, current_state)
+                for child in reversed(children):
                     exist = False
 
                     # # Check in close list
@@ -136,8 +200,11 @@ class DFSearch():
                             self.pushOpenList(child)
 
         if not self.getOpenList():
-            print("NO SOLUTIOON!", "Waiting to finish output files...")
+            print("NO SOLUTION!", "Waiting to finish output files...")
+            print("--- Duration of DFS: %s seconds ---" % (time.time() - start_time))
             self.outputNoSolution()
+            self.outuptSearch()
+            print("--- Duration of Output to file: %s seconds ---" % (time.time() - start_time))
             print("Nodes visited: ", len(self.closeList))
             print("End.")
 

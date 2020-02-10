@@ -47,7 +47,7 @@ class Board():
         print(self.board)
 
     def verify(self):
-        result = np.array_equal(self.board, self.boardOnes)
+        result = np.array_equal(self.board, self.boardZeros)
 
         return result
 
