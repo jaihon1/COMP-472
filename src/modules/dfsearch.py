@@ -71,15 +71,17 @@ class DFSearch():
             # convert numpy array to list so that we can use "index()":
             arrayToList = flattenedChildren[i].tolist()
 
-            try:
+            if(1 in arrayToList):
                 # index of first 1:
                 index = arrayToList.index(1)
                 # store index of first 1 in dictionary:
                 dictionary[i] = index
+            else:
+            # if 1 is not in list, store arbitrary number bigger than any index
+            # when sorting, boards w/o 1 won't be discarded and 100 will be sorted after the 1s 
+                dictionary[i] = 100
 
-            except ValueError:
-                print("Error. 1 is not in the list.")
-
+        # sort by dictionary by value
         tupleList = sorted(dictionary.items(), key=lambda x: (x[1],x[0]))
 
         # converting list of tuples to dictionary:
