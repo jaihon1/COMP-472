@@ -197,6 +197,7 @@ class DFSearch():
 
         if not self.getOpenList():
             print("NO SOLUTION!", "Waiting to finish output files...")
+            print("--- Duration of DFS: %s seconds ---" % (time.time() - start_time))
             self.outputNoSolution()
             self.outuptSearch()
             print("Nodes visited: ", len(self.closeList))
