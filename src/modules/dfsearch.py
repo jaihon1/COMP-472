@@ -3,7 +3,8 @@ import time
 from copy import deepcopy
 from .state import State
 
-TOGGLE_REMOVE_PREVIOUS_MOVE = True
+TOGGLE_REMOVE_PREVIOUS_MOVE = False
+TOGGLE_ORDER_CHILDREN = True
 
 class DFSearch():
     def __init__(self, maxDepth, puzzleIndex):
@@ -103,7 +104,7 @@ class DFSearch():
         for i in range(board.getRows()):
             for j in range(board.getCols()):
                 # Don't include previous move Mode
-                if(TOGGLE_REMOVE_PREVIOUS_MOVE):
+                if TOGGLE_REMOVE_PREVIOUS_MOVE:
                     if not (i == currentState.getCoordinateI() and j == currentState.getCoordinateJ()):
                         temp = board.getBoard()
                         oldBoardState = temp.copy()
@@ -132,9 +133,12 @@ class DFSearch():
 
                     children.append(state)
 
-        # reorderedChildren = self.reorderChildren(children)
+        if TOGGLE_ORDER_CHILDREN:
+            reorderedChildren = self.reorderChildren(children)
+            return reorderedChildren
+        else:
+            return children
 
-        return children
 
 
     def run(self, board):
