@@ -3,6 +3,8 @@ import time
 from copy import deepcopy
 from .state import State
 
+TOGGLE_REMOVE_PREVIOUS_MOVE = True
+
 class DFSearch():
     def __init__(self, maxDepth, puzzleIndex):
         self.openList = [] # A stack
@@ -55,60 +57,67 @@ class DFSearch():
 
     def reorderChildren(self, children):
         flattenedChildren = []
+        sortedKeys = []
+        orderedChildren = []
+
         dictionary = {}
         for child in children:
-            flattenedChildren.append(child.getBoardState().flatten()) 
+            flattenedChildren.append(child.getBoardState().flatten())
 
-        length = len(flattenedChildren)
 
         # iterating through flattened children:
+        length = len(flattenedChildren)
         for i in range(length):
             # convert numpy array to list so that we can use "index()":
-            # print("flattened child:")
-            # print(flattenedChildren[i])
-
-            # print("flattened child list:")
             arrayToList = flattenedChildren[i].tolist()
-            # print(arrayToList)
-            
+
             try:
                 # index of first 1:
                 index = arrayToList.index(1)
                 # store index of first 1 in dictionary:
                 dictionary[i] = index
-                # print("Index of first 1:")
-                # print(dictionary[i])
+
             except ValueError:
                 print("Error. 1 is not in the list.")
-        
-        # sort dictionary:
-        # print("Unsorted")
-        # print(dictionary)
+
         tupleList = sorted(dictionary.items(), key=lambda x: (x[1],x[0]))
-        # print("Sorted:")
+
         # converting list of tuples to dictionary:
         sortedDictionary = dict(tupleList)
-        # print(sortedDictionary)
 
         # taking keys of sortedDictionary:
-        sortedKeys = []
         for key in sortedDictionary:
             sortedKeys.append(key)
-        
+
         # reorder children:
-        length = len(children)
+        for key in sortedKeys:
+            orderedChildren.append(children[key])
 
-    
-        return children
+        return orderedChildren
 
-        
+
     def getChildren(self, board, currentState):
         children = []
         tempCurrentState = deepcopy(currentState)
         for i in range(board.getRows()):
             for j in range(board.getCols()):
-                # Don't get the child that did the same move as you
-                if not (i == currentState.getCoordinateI() and j == currentState.getCoordinateJ()):
+                # Don't include previous move Mode
+                if(TOGGLE_REMOVE_PREVIOUS_MOVE):
+                    if not (i == currentState.getCoordinateI() and j == currentState.getCoordinateJ()):
+                        temp = board.getBoard()
+                        oldBoardState = temp.copy()
+
+                        board.move(i, j)
+
+                        newBoardState = board.getBoard()
+                        board.setBoard(oldBoardState)
+
+                        depth = currentState.getDepth() + 1
+                        state = State(i, j, newBoardState, depth, tempCurrentState)
+
+                        children.append(state)
+                # Normal Mode
+                else:
                     temp = board.getBoard()
                     oldBoardState = temp.copy()
 
@@ -119,7 +128,7 @@ class DFSearch():
 
                     depth = currentState.getDepth() + 1
                     state = State(i, j, newBoardState, depth, tempCurrentState)
-                    
+
                     children.append(state)
 
         reorderedChildren = self.reorderChildren(children)
