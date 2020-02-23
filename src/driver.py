@@ -1,6 +1,6 @@
 from modules.dfsearch import DFSearch
 from modules.bfsearch import BFSearch
-from modules.aStarsearch import AStarSearch
+# from modules.aStarsearch import AStarSearch
 from modules.board import Board
 
 import numpy as np
@@ -8,7 +8,7 @@ import numpy as np
 def main():
 
     ## Get file name
-    filename = input('What file name are the puzzles in ?')
+    filename = input('What file name are the puzzles in ? ')
 
     ## Reading input file ##
     with open(filename) as f:
@@ -43,7 +43,7 @@ def main():
         myBoard.initializeBoardZeros()
 
         # Get search algorithm from user
-        algo = input('What algorithm do you wish to use ?')
+        algo = input('What algorithm do you wish to use ? ')
 
         if (algo=='DFS'):
             # DFS setup
@@ -51,9 +51,9 @@ def main():
         elif (algo == 'BFS'):
             # BFS setup
             game = BFSearch(max_search_length)
-        elif (algo == 'A*'):
+        # elif (algo == 'A*'):
             # A* setup
-            game = AStarSearch(max_search_length)
+            # game = AStarSearch(max_search_length)
         else:
             print('Algorithm not supported')
 
