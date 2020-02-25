@@ -8,7 +8,7 @@ import numpy as np
 def main():
 
     ## Get file name
-    filename = input('What file name are the puzzles in ? ')
+    filename = input('Enter the puzzles filename: ')
 
     ## Reading input file ##
     with open(filename) as f:
