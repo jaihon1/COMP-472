@@ -1,7 +1,10 @@
 import numpy as np
+import time
 from copy import deepcopy
 from .state import State
 
+TOGGLE_REMOVE_PREVIOUS_MOVE = False
+TOGGLE_ORDER_CHILDREN = True
 
 class BFSearch():
     def __init__(self, maxSearchLength, puzzleIndex):
@@ -14,6 +17,7 @@ class BFSearch():
     # push to the end of the open list
     def pushOpenList(self, value):
         self.openList.append(value)
+        self.openList = sorted(self.openList, key=lambda x: x.cost, reverse=True)
 
     # return next node to be accessed
     def popOpenList(self):
@@ -60,158 +64,131 @@ class BFSearch():
             for state in self.closeList:
                 print(str(state.getAlphabeticalCoordinateI()) + str(state.getCoordinateJ()), ' '.join(map(str, state.getBoardState().flatten().astype(int))), file=f)
 
-    # def reorderChildren(self, children):
-    #     flattenedChildren = []
-    #     sortedKeys = []
-    #     reorderedChildren = []
+    def reorderChildren(self, children):
+        flattenedChildren = []
+        sortedKeys = []
+        reorderedChildren = []
 
-    #     dictionary = {}
-    #     for child in children:
-    #         flattenedChildren.append(child.getBoardState().flatten())
+        dictionary = {}
+        for child in children:
+            flattenedChildren.append(child.getBoardState().flatten())
 
 
-    #     # iterating through flattened children:
-    #     length = len(flattenedChildren)
-    #     for i in range(length):
-    #         # convert numpy array to list so that we can use "index()":
-    #         arrayToList = flattenedChildren[i].tolist()
+        # iterating through flattened children:
+        length = len(flattenedChildren)
+        for i in range(length):
+            # convert numpy array to list so that we can use "index()":
+            arrayToList = flattenedChildren[i].tolist()
 
-    #         if(0 in arrayToList):
-    #             # index of first 1:
-    #             index = arrayToList.index(0)
-    #             # store index of first 1 in dictionary:
-    #             dictionary[i] = index
-    #         else:
-    #         # if 1 is not in list, store arbitrary number bigger than any index
-    #         # when sorting, boards w/o 1 won't be discarded and 100 will be sorted after the 1s
-    #             dictionary[i] = 100
+            if(0 in arrayToList):
+                # index of first 1:
+                index = arrayToList.index(0)
+                # store index of first 1 in dictionary:
+                dictionary[i] = index
+            else:
+            # if 1 is not in list, store arbitrary number bigger than any index
+            # when sorting, boards w/o 1 won't be discarded and 100 will be sorted after the 1s
+                dictionary[i] = 100
 
-    #     # sort by dictionary by value
-    #     tupleList = sorted(dictionary.items(), key=lambda x: (x[1],x[0]))
+        # sort by dictionary by value
+        tupleList = sorted(dictionary.items(), key=lambda x: (x[1],x[0]))
 
-    #     # converting list of tuples to dictionary:
-    #     sortedDictionary = dict(tupleList)
+        # converting list of tuples to dictionary:
+        sortedDictionary = dict(tupleList)
 
-    #     # taking keys of sortedDictionary:
-    #     for key in sortedDictionary:
-    #         sortedKeys.append(key)
+        # taking keys of sortedDictionary:
+        for key in sortedDictionary:
+            sortedKeys.append(key)
 
-    #     # reorder children:
-    #     for key in sortedKeys:
-    #         reorderedChildren.append(children[key])
+        # reorder children:
+        for key in sortedKeys:
+            reorderedChildren.append(children[key])
 
-    #     return reorderedChildren
+        return reorderedChildren
 
-    # def getChildren(self, board, currentState):
-    #     children = []
-    #     tempCurrentState = deepcopy(currentState)
-    #     for i in range(board.getRows()):
-    #         for j in range(board.getCols()):
-    #             # Don't include previous move Mode
-    #             if TOGGLE_REMOVE_PREVIOUS_MOVE:
-    #                 if not (i == currentState.getCoordinateI() and j == currentState.getCoordinateJ()):
-    #                     temp = board.getBoard()
-    #                     oldBoardState = temp.copy()
+    def getChildren(self, board, currentState):
+        children = []
+        tempCurrentState = deepcopy(currentState)
+        for i in range(board.getRows()):
+            for j in range(board.getCols()):
+                # Don't include previous move Mode
+                if TOGGLE_REMOVE_PREVIOUS_MOVE:
+                    if not (i == currentState.getCoordinateI() and j == currentState.getCoordinateJ()):
+                        temp = board.getBoard()
+                        oldBoardState = temp.copy()
 
-    #                     board.move(i, j)
+                        board.move(i, j)
 
-    #                     newBoardState = board.getBoard()
-    #                     board.setBoard(oldBoardState)
+                        newBoardState = board.getBoard()
+                        board.setBoard(oldBoardState)
 
-    #                     depth = currentState.getDepth() + 1
-    #                     state = State(i, j, newBoardState, depth, tempCurrentState)
+                        depth = currentState.getDepth() + 1
+                        state = State(i, j, newBoardState, depth, tempCurrentState)
 
-    #                     children.append(state)
-    #             # Normal Mode
-    #             else:
-    #                 temp = board.getBoard()
-    #                 oldBoardState = temp.copy()
+                        children.append(state)
+                # Normal Mode
+                else:
+                    temp = board.getBoard()
+                    oldBoardState = temp.copy()
 
-    #                 board.move(i, j)
+                    board.move(i, j)
 
-    #                 newBoardState = board.getBoard()
-    #                 board.setBoard(oldBoardState)
+                    newBoardState = board.getBoard()
+                    board.setBoard(oldBoardState)
 
-    #                 depth = currentState.getDepth() + 1
-    #                 state = State(i, j, newBoardState, depth, tempCurrentState)
+                    depth = currentState.getDepth() + 1
+                    state = State(i, j, newBoardState, depth, tempCurrentState)
 
-    #                 children.append(state)
+                    children.append(state)
 
-    #     if TOGGLE_ORDER_CHILDREN:
-    #         reorderedChildren = self.reorderChildren(children)
-    #         return reorderedChildren
-    #     else:
-    #         return children
+        if TOGGLE_ORDER_CHILDREN:
+            reorderedChildren = self.reorderChildren(children)
+            return reorderedChildren
+        else:
+            return children
 
 
 
     def run(self, board):
         print('Running bfs')
         # Initial state
-        # initial_state = State(11, 0, board.getBoard(), 0, None)
-        # self.pushOpenList(initial_state)
+        initial_state = State(11, 0, board.getBoard(), 0, None)
+        self.pushOpenList(initial_state)
 
         # Initiate Timer
-        # start_time = time.time()
+        start_time = time.time()
 
         # Run Game
-        # print("Initiating BFS!!")
-        # while self.getOpenList():
-        #     current_state = self.popOpenList()
-        #     board.setBoard(current_state.getBoardState())
-        #     self.addCloseList(deepcopy(current_state))
-        #     result = board.verify()
+        print("Initiating BFS!!")
+        while self.getOpenList() or (len(self.getCloseList())<self.maxSearchLength):
+            current_state = self.popOpenList()
+            board.setBoard(current_state.getBoardState())
+            self.addCloseList(deepcopy(current_state))
+            result = board.verify()
 
-        #     if result:
-        #         print("GOOD WORK!", "Waiting to finish output files...")
-        #         print("--- Duration of DFS: %s seconds ---" % (time.time() - start_time))
-        #         self.getSolution(current_state)
-        #         self.outputSolution()
-        #         self.outuptSearch()
-        #         print("--- Duration of Output to file: %s seconds ---" % (time.time() - start_time))
-        #         print("Nodes visited: ", len(self.closeList))
-        #         print("End.")
-        #         break
-        #     else:
-        #         children = self.getChildren(board, current_state)
-        #         for child in reversed(children):
-        #             exist = False
+            if result:
+                print("GOOD WORK!", "Waiting to finish output files...")
+                print("--- Duration of BFS: %s seconds ---" % (time.time() - start_time))
+                self.getSolution(current_state)
+                self.outputSolution()
+                self.outuptSearch()
+                print("--- Duration of Output to file: %s seconds ---" % (time.time() - start_time))
+                print("Nodes visited: ", len(self.closeList))
+                print("End.")
+                break
+            else:
+                children = self.getChildren(board, current_state)
+                for child in children.sort():
+                    self.pushOpenList(child)
 
-                    # # Check in close list
-                    # for move in self.getCloseList():
-                    #     resultState = np.array_equal(child.getBoardState(), move.getBoardState())
-                    #     # result_i = child.getCoordinateI() == move.getCoordinateI()
-                    #     # result_j = child.getCoordinateJ() == move.getCoordinateJ()
-
-                    #     # if resultState and result_i and result_j:
-                    #     if resultState:
-                    #         exist = True
-                    #         break
-
-                    # if not exist:
-                    #     # Check in open list
-                    #     for move in self.getOpenList():
-                    #         resultState = np.array_equal(child.getBoardState(), move.getBoardState())
-                    #         # result_i = child.getCoordinateI() == move.getCoordinateI()
-                    #         # result_j = child.getCoordinateJ() == move.getCoordinateJ()
-
-                    #         # if resultState and result_i and result_j:
-                    #         if resultState:
-                    #                 exist = True
-                    #                 break
-
-        #             if not exist:
-        #                 if child.getDepth() <= self.maxDepth:
-        #                     self.pushOpenList(child)
-
-        # if not self.getOpenList():
-        #     print("NO SOLUTION!", "Waiting to finish output files...")
-        #     print("--- Duration of DFS: %s seconds ---" % (time.time() - start_time))
-        #     self.outputNoSolution()
-        #     self.outuptSearch()
-        #     print("--- Duration of Output to file: %s seconds ---" % (time.time() - start_time))
-        #     print("Nodes visited: ", len(self.closeList))
-        #     print("End.")
+        if not self.getOpenList():
+            print("NO SOLUTION!", "Waiting to finish output files...")
+            print("--- Duration of DFS: %s seconds ---" % (time.time() - start_time))
+            self.outputNoSolution()
+            self.outuptSearch()
+            print("--- Duration of Output to file: %s seconds ---" % (time.time() - start_time))
+            print("Nodes visited: ", len(self.closeList))
+            print("End.")
 
 def main():
     print("This is BFS.")

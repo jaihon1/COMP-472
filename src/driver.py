@@ -50,7 +50,7 @@ def main():
             game = DFSearch(max_depth, puzzleIndex)
         elif (algo == 'BFS'):
             # BFS setup
-            game = BFSearch(max_search_length)
+            game = BFSearch(max_search_length, puzzleIndex)
         # elif (algo == 'A*'):
             # A* setup
             # game = AStarSearch(max_search_length)

@@ -6,6 +6,7 @@ class State():
         self.boardState = boardState
         self.depth = depth
         self.previousState = previousState
+        self.cost = self.getCost()
 
     def getAlphabeticalCoordinateI(self):
         numericalCoordinate = self.i
@@ -48,6 +49,12 @@ class State():
 
     def setPreviousState(self, state):
         self.previousState = state
+
+    def getCost(self):
+        cost = 0
+        for i in self.getBoardState().flatten().tolist():
+            if (i == 0):
+                cost = cost + 1
 
 
 def main():
