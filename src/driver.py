@@ -44,21 +44,26 @@ def main():
 
         # Get search algorithm from user
         algo = input('What algorithm do you wish to use ? ')
+        isAlgoSupported = 0
 
         if (algo=='DFS'):
             # DFS setup
+            isAlgoSupported = 1
             game = DFSearch(max_depth, puzzleIndex)
         elif (algo == 'BFS'):
             # BFS setup
+            isAlgoSupported = 1
             game = BFSearch(max_search_length, puzzleIndex)
         # elif (algo == 'A*'):
             # A* setup
+            # isAlgoSupported = 1
             # game = AStarSearch(max_search_length)
         else:
             print('Algorithm not supported')
 
-        print("Initial Board")
-        print(myBoard.getBoard())
+        if isAlgoSupported == 1:
+            print("Initial Board")
+            print(myBoard.getBoard())
 
         game.run(myBoard)
 

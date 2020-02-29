@@ -53,9 +53,9 @@ class State():
     def getCost(self):
         cost = 0
         for i in self.getBoardState().flatten().tolist():
-            if (i == 0):
+            if (i == 1):
                 cost = cost + 1
-
+        return cost
 
 def main():
     print("State class")

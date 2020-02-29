@@ -160,7 +160,9 @@ class BFSearch():
 
         # Run Game
         print("Initiating BFS!!")
-        while self.getOpenList() or (len(self.getCloseList())<self.maxSearchLength):
+        while self.getOpenList():
+            if self.maxSearchLength == len(self.getCloseList()):
+                break
             current_state = self.popOpenList()
             board.setBoard(current_state.getBoardState())
             self.addCloseList(deepcopy(current_state))
@@ -178,10 +180,16 @@ class BFSearch():
                 break
             else:
                 children = self.getChildren(board, current_state)
-                for child in children.sort():
+                print('pushing children')
+                board.draw()
+                for child in children:
                     self.pushOpenList(child)
+                    print('pushing child')
+                    print(child.getAlphabeticalCoordinateI())
+                    print(child.getCoordinateJ())
+                    print(child.getBoardState())
 
-        if not self.getOpenList():
+        if not self.getOpenList() or self.maxSearchLength == len(self.getCloseList()):
             print("NO SOLUTION!", "Waiting to finish output files...")
             print("--- Duration of DFS: %s seconds ---" % (time.time() - start_time))
             self.outputNoSolution()
