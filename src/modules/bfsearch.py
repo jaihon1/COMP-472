@@ -62,7 +62,8 @@ class BFSearch():
     def outuptSearch(self):
         with open(str(self.puzzleIndex) + '_bfs_search.txt', 'a') as f:
             for state in self.closeList:
-                print(str(state.getAlphabeticalCoordinateI()) + str(state.getCoordinateJ()), ' '.join(map(str, state.getBoardState().flatten().astype(int))), file=f)
+                # f(n), g(n), h(n)
+                print(str(state.getCost()) + ' ' + str(state.getCost()) + ' 0', ' '.join(map(str, state.getBoardState().flatten().astype(int))), file=f)
 
     def reorderChildren(self, children):
         flattenedChildren = []

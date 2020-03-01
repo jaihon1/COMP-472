@@ -54,7 +54,7 @@ class DFSearch():
     def outuptSearch(self):
         with open(str(self.puzzleIndex) + '_dfs_search.txt', 'a') as f:
             for state in self.closeList:
-                print(str(state.getAlphabeticalCoordinateI()) + str(state.getCoordinateJ()), ' '.join(map(str, state.getBoardState().flatten().astype(int))), file=f)
+                print('0 0 0', ' '.join(map(str, state.getBoardState().flatten().astype(int))), file=f)
 
     def reorderChildren(self, children):
         flattenedChildren = []
@@ -79,7 +79,7 @@ class DFSearch():
                 dictionary[i] = index
             else:
             # if 1 is not in list, store arbitrary number bigger than any index
-            # when sorting, boards w/o 1 won't be discarded and 100 will be sorted after the 1s 
+            # when sorting, boards w/o 1 won't be discarded and 100 will be sorted after the 1s
                 dictionary[i] = 100
 
         # sort by dictionary by value
