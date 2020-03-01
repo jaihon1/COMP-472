@@ -17,13 +17,7 @@ class BFSearch():
     # push to the end of the open list
     def pushOpenList(self, value):
         self.openList.append(value)
-        # print("Before")
-        # for state in self.openList:
-        #     print(state.getCost())
         self.openList = sorted(self.openList, key=lambda x: x.cost, reverse=True)
-        # print("After")
-        # for state in self.openList:
-        #     print(state.getCost())
 
     # return next node to be accessed
     def popOpenList(self):
@@ -93,11 +87,11 @@ class BFSearch():
                 # store index of first 0 in dictionary:
                 dictionary[i] = index
             else:
-            # if 1 is not in list, store arbitrary number bigger than any index
+            # if 0 is not in list, store arbitrary number bigger than any index
             # when sorting, boards w/o 1 won't be discarded and 100 will be sorted after the 1s
                 dictionary[i] = 100
 
-        # sort by dictionary by value
+        # sort by dictionary by value and reverse it because of the logic in the push open list
         tupleList = sorted(dictionary.items(), key=lambda x: (x[1],x[0]), reverse=True)
 
         # converting list of tuples to dictionary:
@@ -110,8 +104,6 @@ class BFSearch():
         # reorder children:
         for key in sortedKeys:
             reorderedChildren.append(children[key])
-            print(children[key].getCost())
-            print(children[key].getBoardState())
 
         return reorderedChildren
 
@@ -189,24 +181,8 @@ class BFSearch():
                 break
             else:
                 children = self.getChildren(board, current_state)
-                print('pushing children')
-
-                print("Before")
-                for state in self.openList:
-                    print(state.getCost())
-
-                # board.draw()
-
                 for child in children:
                     self.pushOpenList(child)
-                    # print('pushing child')
-                    # print(child.getAlphabeticalCoordinateI())
-                    # print(child.getCoordinateJ())
-                    # print(child.getBoardState())
-
-                print("After")
-                for state in self.openList:
-                    print(state.getCost())
 
 
         if not self.getOpenList() or self.maxSearchLength == len(self.getCloseList()):
