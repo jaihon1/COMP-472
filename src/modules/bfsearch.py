@@ -4,7 +4,7 @@ from copy import deepcopy
 from .state import State
 
 TOGGLE_REMOVE_PREVIOUS_MOVE = False
-TOGGLE_ORDER_CHILDREN = True
+TOGGLE_ORDER_CHILDREN = False
 
 class BFSearch():
     def __init__(self, maxSearchLength, puzzleIndex):
@@ -57,13 +57,13 @@ class BFSearch():
     def outputSolution(self):
         with open(str(self.puzzleIndex) + '_bfs_solution.txt', 'a') as f:
             for state in reversed(self.solutionPath):
-                print(str(state.getAlphabeticalCoordinateI()) + str(state.getCoordinateJ()), ' '.join(map(str, state.getBoardState().flatten().astype(int))), file=f)
+                print(str(state.getAlphabeticalCoordinateI()) + str(state.getCoordinateJ()), ''.join(map(str, state.getBoardState().flatten().astype(int))), file=f)
 
     def outuptSearch(self):
         with open(str(self.puzzleIndex) + '_bfs_search.txt', 'a') as f:
             for state in self.closeList:
                 # f(n), g(n), h(n)
-                print(str(state.getCost()) + ' ' + str(state.getCost()) + ' 0', ' '.join(map(str, state.getBoardState().flatten().astype(int))), file=f)
+                print(str(state.getCost()) + ' ' + str(state.getCost()) + ' 0 ', ''.join(map(str, state.getBoardState().flatten().astype(int))), file=f)
 
     def reorderChildren(self, children):
         flattenedChildren = []
@@ -82,16 +82,16 @@ class BFSearch():
             arrayToList = flattenedChildren[i].tolist()
 
             if(0 in arrayToList):
-                # index of first 1:
+                # index of first 0:
                 index = arrayToList.index(0)
-                # store index of first 1 in dictionary:
+                # store index of first 0 in dictionary:
                 dictionary[i] = index
             else:
             # if 1 is not in list, store arbitrary number bigger than any index
             # when sorting, boards w/o 1 won't be discarded and 100 will be sorted after the 1s
                 dictionary[i] = 100
 
-        # sort by dictionary by value
+        # sort dictionary by value
         tupleList = sorted(dictionary.items(), key=lambda x: (x[1],x[0]))
 
         # converting list of tuples to dictionary:
