@@ -7,12 +7,13 @@ TOGGLE_REMOVE_PREVIOUS_MOVE = False
 TOGGLE_ORDER_CHILDREN = True
 
 class BFSearch():
-    def __init__(self, maxSearchLength, puzzleIndex):
+    def __init__(self, maxSearchLength, puzzleIndex, algorithm):
         self.openList = [] # A priority queue, sorted in ascending order, ie: next is the lowest h(n)
         self.closeList = [] # A stack
         self.maxSearchLength = maxSearchLength
         self.solutionPath = []
         self.puzzleIndex = puzzleIndex
+        self.algorithm = algorithm
 
     # push to the end of the open list
     def pushOpenList(self, value):
@@ -137,7 +138,7 @@ class BFSearch():
                     board.setBoard(oldBoardState)
 
                     depth = currentState.getDepth() + 1
-                    state = State(i, j, newBoardState, depth, tempCurrentState)
+                    state = State(i, j, newBoardState, depth, tempCurrentState, self.algorithm)
 
                     children.append(state)
 
@@ -152,7 +153,8 @@ class BFSearch():
     def run(self, board):
         print('Running bfs')
         # Initial state
-        initial_state = State(11, 0, board.getBoard(), 0, None)
+        print(self.algorithm)
+        initial_state = State(11, 0, board.getBoard(), 0, None, self.algorithm)
         self.pushOpenList(initial_state)
 
         # Initiate Timer
@@ -191,7 +193,7 @@ class BFSearch():
 
         if not self.getOpenList() or self.maxSearchLength == len(self.getCloseList()):
             print("NO SOLUTION!", "Waiting to finish output files...")
-            print("--- Duration of DFS: %s seconds ---" % (time.time() - start_time))
+            print("--- Duration of BFS: %s seconds ---" % (time.time() - start_time))
             self.outputNoSolution()
             self.outuptSearch()
             print("--- Duration of Output to file: %s seconds ---" % (time.time() - start_time))
