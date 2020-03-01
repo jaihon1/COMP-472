@@ -17,7 +17,13 @@ class BFSearch():
     # push to the end of the open list
     def pushOpenList(self, value):
         self.openList.append(value)
+        # print("Before")
+        # for state in self.openList:
+        #     print(state.getCost())
         self.openList = sorted(self.openList, key=lambda x: x.cost, reverse=True)
+        # print("After")
+        # for state in self.openList:
+        #     print(state.getCost())
 
     # return next node to be accessed
     def popOpenList(self):
@@ -63,7 +69,7 @@ class BFSearch():
         with open(str(self.puzzleIndex) + '_bfs_search.txt', 'a') as f:
             for state in self.closeList:
                 # f(n), g(n), h(n)
-                print(str(state.getCost()) + ' ' + str(state.getCost()) + ' 0', ' '.join(map(str, state.getBoardState().flatten().astype(int))), file=f)
+                print(str(state.getCost()) + ' ' + str(state.getCost()) + ' 0 ', ''.join(map(str, state.getBoardState().flatten().astype(int))), file=f)
 
     def reorderChildren(self, children):
         flattenedChildren = []
@@ -92,7 +98,7 @@ class BFSearch():
                 dictionary[i] = 100
 
         # sort by dictionary by value
-        tupleList = sorted(dictionary.items(), key=lambda x: (x[1],x[0]))
+        tupleList = sorted(dictionary.items(), key=lambda x: (x[1],x[0]), reverse=True)
 
         # converting list of tuples to dictionary:
         sortedDictionary = dict(tupleList)
@@ -104,6 +110,8 @@ class BFSearch():
         # reorder children:
         for key in sortedKeys:
             reorderedChildren.append(children[key])
+            print(children[key].getCost())
+            print(children[key].getBoardState())
 
         return reorderedChildren
 
@@ -182,13 +190,24 @@ class BFSearch():
             else:
                 children = self.getChildren(board, current_state)
                 print('pushing children')
-                board.draw()
+
+                print("Before")
+                for state in self.openList:
+                    print(state.getCost())
+
+                # board.draw()
+
                 for child in children:
                     self.pushOpenList(child)
-                    print('pushing child')
-                    print(child.getAlphabeticalCoordinateI())
-                    print(child.getCoordinateJ())
-                    print(child.getBoardState())
+                    # print('pushing child')
+                    # print(child.getAlphabeticalCoordinateI())
+                    # print(child.getCoordinateJ())
+                    # print(child.getBoardState())
+
+                print("After")
+                for state in self.openList:
+                    print(state.getCost())
+
 
         if not self.getOpenList() or self.maxSearchLength == len(self.getCloseList()):
             print("NO SOLUTION!", "Waiting to finish output files...")
