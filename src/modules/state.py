@@ -7,6 +7,7 @@ class State():
         self.depth = depth
         self.previousState = previousState
         self.cost = self.getCost()
+        self.totalCost = depth + self.getCost()
 
     def getAlphabeticalCoordinateI(self):
         numericalCoordinate = self.i
@@ -49,6 +50,9 @@ class State():
 
     def setPreviousState(self, state):
         self.previousState = state
+
+    def getTotalCost(self):
+        return self.totalCost
 
     def getCost(self):
         cost = 0

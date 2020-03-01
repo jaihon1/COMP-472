@@ -187,7 +187,7 @@ class BFSearch():
 
         if not self.getOpenList() or self.maxSearchLength == len(self.getCloseList()):
             print("NO SOLUTION!", "Waiting to finish output files...")
-            print("--- Duration of DFS: %s seconds ---" % (time.time() - start_time))
+            print("--- Duration of BFS: %s seconds ---" % (time.time() - start_time))
             self.outputNoSolution()
             self.outuptSearch()
             print("--- Duration of Output to file: %s seconds ---" % (time.time() - start_time))

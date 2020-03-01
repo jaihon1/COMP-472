@@ -1,5 +1,6 @@
 from modules.dfsearch import DFSearch
 from modules.bfsearch import BFSearch
+from modules.aStarsearch import AStarSearch
 # from modules.aStarsearch import AStarSearch
 from modules.board import Board
 
@@ -54,10 +55,10 @@ def main():
             # BFS setup
             isAlgoSupported = 1
             game = BFSearch(max_search_length, puzzleIndex)
-        # elif (algo == 'A*'):
+        elif (algo == 'A*'):
             # A* setup
-            # isAlgoSupported = 1
-            # game = AStarSearch(max_search_length)
+            isAlgoSupported = 1
+            game = AStarSearch(max_search_length, puzzleIndex)
         else:
             print('Algorithm not supported')
 
