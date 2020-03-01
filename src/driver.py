@@ -64,8 +64,7 @@ def main():
         if isAlgoSupported == 1:
             print("Initial Board")
             print(myBoard.getBoard())
-
-        game.run(myBoard)
+            game.run(myBoard)
 
 
 
