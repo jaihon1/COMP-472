@@ -4,7 +4,7 @@ from copy import deepcopy
 from .state import State
 
 TOGGLE_REMOVE_PREVIOUS_MOVE = False
-TOGGLE_ORDER_CHILDREN = False
+TOGGLE_ORDER_CHILDREN = True
 
 class AStarSearch():
     def __init__(self, maxSearchLength, puzzleIndex):
