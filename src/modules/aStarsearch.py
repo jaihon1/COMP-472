@@ -109,7 +109,8 @@ class AStarSearch():
 
     def getChildren(self, board, currentState):
         children = []
-        tempCurrentState = deepcopy(currentState)
+        # tempCurrentState = deepcopy(currentState)
+        tempCurrentState = currentState
         for i in range(board.getRows()):
             for j in range(board.getCols()):
                 # Don't include previous move Mode
@@ -138,7 +139,7 @@ class AStarSearch():
                     board.setBoard(oldBoardState)
 
                     depth = currentState.getDepth() + 1
-                    state = State(i, j, newBoardState, depth, tempCurrentState)
+                    state = State(i, j, deepcopy(newBoardState), depth, tempCurrentState)
 
                     children.append(state)
 
@@ -153,7 +154,7 @@ class AStarSearch():
     def run(self, board):
         print('Running astar')
         # Initial state
-        initial_state = State(11, 0, board.getBoard(), 0, None)
+        initial_state = State(11, 0, deepcopy(board.getBoard()), 0, None)
         self.pushOpenList(initial_state)
 
         # Initiate Timer
@@ -165,8 +166,9 @@ class AStarSearch():
             if self.maxSearchLength == len(self.getCloseList()):
                 break
             current_state = self.popOpenList()
-            board.setBoard(current_state.getBoardState())
-            self.addCloseList(deepcopy(current_state))
+            board.setBoard(deepcopy(current_state.getBoardState()))
+            # self.addCloseList(deepcopy(current_state))
+            self.addCloseList(current_state)
             result = board.verify()
 
             if result:
