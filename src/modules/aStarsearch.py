@@ -74,7 +74,6 @@ class AStarSearch():
         for child in children:
             flattenedChildren.append(child.getBoardState().flatten())
 
-
         # iterating through flattened children:
         length = len(flattenedChildren)
         for i in range(length):
@@ -150,7 +149,6 @@ class AStarSearch():
             return children
 
 
-
     def run(self, board):
         print('Running astar')
         # Initial state
@@ -198,8 +196,6 @@ class AStarSearch():
 
 def main():
     print("This is ASTAR.")
-
-
 
 
 

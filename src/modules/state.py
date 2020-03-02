@@ -1,3 +1,7 @@
+import numpy as np
+
+TOGGLE_HEURISTIC_1 = True
+TOGGLE_HEURISTIC_2 = False
 
 class State():
     def __init__(self, coordinate_i, coordinate_j, boardState, depth, previousState):
@@ -55,11 +59,34 @@ class State():
         return self.totalCost
 
     def getCost(self):
-        cost = 0
-        for i in self.getBoardState().flatten().tolist():
-            if (i == 1):
-                cost = cost + 1
-        return cost
+        if TOGGLE_HEURISTIC_1:
+            cost = 0
+            # Counting number of 1's in the current state
+            for i in self.getBoardState().flatten().tolist():
+                if (i == 1):
+                    cost = cost + 1
+            return cost
+
+        if TOGGLE_HEURISTIC_2:
+            if self.previousState:
+                cost = self.boardState.size
+
+                # Get matrix difference between parent and child matrices
+                changes = np.subtract(self.boardState, self.previousState.getBoardState())
+
+                #Give score
+                for i in changes.flatten().tolist():
+                    # Give negative reward: It was updated from 0 -> 1
+                    if (i == 1):
+                        cost = cost + 2
+                    # Give positive reward: It was updated from 1 -> 0
+                    if (i == -1):
+                        cost = cost - 1
+
+                return cost
+            else:
+                return 0
+
 
 def main():
     print("State class")
