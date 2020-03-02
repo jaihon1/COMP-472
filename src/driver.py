@@ -1,7 +1,7 @@
 from modules.dfsearch import DFSearch
 from modules.bfsearch import BFSearch
 from modules.aStarsearch import AStarSearch
-# from modules.aStarsearch import AStarSearch
+from copy import deepcopy
 from modules.board import Board
 
 import numpy as np
@@ -59,6 +59,16 @@ def main():
             # A* setup
             isAlgoSupported = 1
             game = AStarSearch(max_search_length, puzzleIndex)
+        elif (algo == 'All'):
+            # run all algorithms
+            print("Initial Board")
+            print(myBoard.getBoard())
+            board1 = deepcopy(myBoard)
+            board2 = deepcopy(myBoard)
+            board3 = deepcopy(myBoard)
+            DFSearch(max_depth, puzzleIndex).run(board1)
+            BFSearch(max_search_length, puzzleIndex).run(board2)
+            AStarSearch(max_search_length, puzzleIndex).run(board3)
         else:
             print('Algorithm not supported')
 
