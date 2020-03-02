@@ -6,31 +6,39 @@ from .state import State
 TOGGLE_REMOVE_PREVIOUS_MOVE = False
 TOGGLE_ORDER_CHILDREN = True
 
-class DFSearch():
-    def __init__(self, maxDepth, puzzleIndex):
-        self.openList = [] # A stack
-        self.closeList = [] # A queue
-        self.maxDepth = maxDepth
+class AStarSearch():
+    def __init__(self, maxSearchLength, puzzleIndex):
+        self.openList = [] # A priority queue, sorted in ascending order, ie: next is the lowest f(n)
+        self.closeList = [] # A stack
+        self.maxSearchLength = maxSearchLength
         self.solutionPath = []
         self.puzzleIndex = puzzleIndex
 
+    # push to the end of the open list
     def pushOpenList(self, value):
         self.openList.append(value)
+        self.openList = sorted(self.openList, key=lambda x: x.totalCost, reverse=True)
 
+    # return next node to be accessed
     def popOpenList(self):
         return self.openList.pop()
 
+    # add to the end of the closed list
     def addCloseList(self, value):
         self.closeList.append(value)
 
+    # get latest accessed node
     def removeCloseList(self, value):
-        return self.closeList.pop(0)
+        return self.closeList.pop()
 
+    # return the current open list
     def getOpenList(self):
         return self.openList
 
+    # return the current closed list
     def getCloseList(self):
         return self.closeList
+
 
     def getSolution(self, state):
         currentState = state
@@ -43,18 +51,19 @@ class DFSearch():
         return self.solutionPath
 
     def outputNoSolution(self):
-        with open(str(self.puzzleIndex) + '_dfs_solution.txt', 'a') as f:
+        with open(str(self.puzzleIndex) + '_astar_solution.txt', 'a') as f:
             print("NO SOLUTION!", file=f)
 
     def outputSolution(self):
-        with open(str(self.puzzleIndex) + '_dfs_solution.txt', 'a') as f:
+        with open(str(self.puzzleIndex) + '_astar_solution.txt', 'a') as f:
             for state in reversed(self.solutionPath):
                 print(str(state.getAlphabeticalCoordinateI()) + str(state.getCoordinateJ()), ''.join(map(str, state.getBoardState().flatten().astype(int))), file=f)
 
     def outuptSearch(self):
-        with open(str(self.puzzleIndex) + '_dfs_search.txt', 'a') as f:
+        with open(str(self.puzzleIndex) + '_astar_search.txt', 'a') as f:
             for state in self.closeList:
-                print('0 0 0 ', ''.join(map(str, state.getBoardState().flatten().astype(int))), file=f)
+                # f(n), g(n), h(n)
+                print(str(state.getTotalCost()) + ' ' + str(state.getDepth()) + ' ' + str(state.getCost()), ''.join(map(str, state.getBoardState().flatten().astype(int))), file=f)
 
     def reorderChildren(self, children):
         flattenedChildren = []
@@ -65,7 +74,6 @@ class DFSearch():
         for child in children:
             flattenedChildren.append(child.getBoardState().flatten())
 
-
         # iterating through flattened children:
         length = len(flattenedChildren)
         for i in range(length):
@@ -73,17 +81,17 @@ class DFSearch():
             arrayToList = flattenedChildren[i].tolist()
 
             if(0 in arrayToList):
-                # index of first 1:
+                # index of first 0:
                 index = arrayToList.index(0)
-                # store index of first 1 in dictionary:
+                # store index of first 0 in dictionary:
                 dictionary[i] = index
             else:
-            # if 1 is not in list, store arbitrary number bigger than any index
+            # if 0 is not in list, store arbitrary number bigger than any index
             # when sorting, boards w/o 1 won't be discarded and 100 will be sorted after the 1s
                 dictionary[i] = 100
 
-        # sort by dictionary by value
-        tupleList = sorted(dictionary.items(), key=lambda x: (x[1],x[0]))
+        # sort by dictionary by value and reverse it because of the logic in the push open list
+        tupleList = sorted(dictionary.items(), key=lambda x: (x[1],x[0]), reverse=True)
 
         # converting list of tuples to dictionary:
         sortedDictionary = dict(tupleList)
@@ -100,7 +108,8 @@ class DFSearch():
 
     def getChildren(self, board, currentState):
         children = []
-        tempCurrentState = deepcopy(currentState)
+        # tempCurrentState = deepcopy(currentState)
+        tempCurrentState = currentState
         for i in range(board.getRows()):
             for j in range(board.getCols()):
                 # Don't include previous move Mode
@@ -129,7 +138,7 @@ class DFSearch():
                     board.setBoard(oldBoardState)
 
                     depth = currentState.getDepth() + 1
-                    state = State(i, j, newBoardState, depth, tempCurrentState)
+                    state = State(i, j, deepcopy(newBoardState), depth, tempCurrentState)
 
                     children.append(state)
 
@@ -140,26 +149,29 @@ class DFSearch():
             return children
 
 
-
     def run(self, board):
+        print('Running astar')
         # Initial state
-        initial_state = State(11, 0, board.getBoard(), 0, None)
+        initial_state = State(11, 0, deepcopy(board.getBoard()), 0, None)
         self.pushOpenList(initial_state)
 
         # Initiate Timer
         start_time = time.time()
 
         # Run Game
-        print("Initiating DFS!!")
+        print("Initiating ASTAR!!")
         while self.getOpenList():
+            if self.maxSearchLength == len(self.getCloseList()):
+                break
             current_state = self.popOpenList()
-            board.setBoard(current_state.getBoardState())
-            self.addCloseList(deepcopy(current_state))
+            board.setBoard(deepcopy(current_state.getBoardState()))
+            # self.addCloseList(deepcopy(current_state))
+            self.addCloseList(current_state)
             result = board.verify()
 
             if result:
                 print("GOOD WORK!", "Waiting to finish output files...")
-                print("--- Duration of DFS: %s seconds ---" % (time.time() - start_time))
+                print("--- Duration of ASTAR: %s seconds ---" % (time.time() - start_time))
                 self.getSolution(current_state)
                 self.outputSolution()
                 self.outuptSearch()
@@ -169,56 +181,21 @@ class DFSearch():
                 break
             else:
                 children = self.getChildren(board, current_state)
-                for child in reversed(children):
-                    exist = False
+                for child in children:
+                    self.pushOpenList(child)
 
-                    # # Check in close list
-                    # for move in self.getCloseList():
-                    #     resultState = np.array_equal(child.getBoardState(), move.getBoardState())
-                    #     # result_i = child.getCoordinateI() == move.getCoordinateI()
-                    #     # result_j = child.getCoordinateJ() == move.getCoordinateJ()
 
-                    #     # if resultState and result_i and result_j:
-                    #     if resultState:
-                    #         exist = True
-                    #         break
-
-                    # if not exist:
-                    #     # Check in open list
-                    #     for move in self.getOpenList():
-                    #         resultState = np.array_equal(child.getBoardState(), move.getBoardState())
-                    #         # result_i = child.getCoordinateI() == move.getCoordinateI()
-                    #         # result_j = child.getCoordinateJ() == move.getCoordinateJ()
-
-                    #         # if resultState and result_i and result_j:
-                    #         if resultState:
-                    #                 exist = True
-                    #                 break
-
-                    if not exist:
-                        if child.getDepth() <= self.maxDepth:
-                            self.pushOpenList(child)
-
-        if not self.getOpenList():
+        if not self.getOpenList() or self.maxSearchLength == len(self.getCloseList()):
             print("NO SOLUTION!", "Waiting to finish output files...")
-            print("--- Duration of DFS: %s seconds ---" % (time.time() - start_time))
+            print("--- Duration of ASTAR: %s seconds ---" % (time.time() - start_time))
             self.outputNoSolution()
             self.outuptSearch()
             print("--- Duration of Output to file: %s seconds ---" % (time.time() - start_time))
             print("Nodes visited: ", len(self.closeList))
             print("End.")
 
-
-
-
-
-
-
-
 def main():
-    print("This is DFS.")
-
-
+    print("This is ASTAR.")
 
 
 
